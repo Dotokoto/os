@@ -80,7 +80,7 @@ int writeNumbers(char *name) {
 	}	
 	int i, n;
 	for (i = 0; i < count; i++) {
-		n = fprintf(fp, "%d", numbers[i]);
+		n = fprintf(fp, "%d ", numbers[i]);
 		if (n < 0) {
 			asprintf(&errorString, "Cannot write to file %s\n", name);
 			fputs(errorString,  stderr);
@@ -89,6 +89,16 @@ int writeNumbers(char *name) {
 		}
 	}
 	fclose(fp);
+}
+
+int checkSort() {
+	int i;
+	for(i = 0; i < count - 1; i++) {
+		if(numbers[i] > numbers[i+1]) {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 int main (int argc, char *argv[]) {
@@ -101,6 +111,9 @@ int main (int argc, char *argv[]) {
 		error = readFile(argv[i]);
 	}
 	qsort(numbers, (size_t)count, sizeof(int), compare);
+	if((error = checkSort(numbers)) != 0) {
+		fputs("Wrong sort",  stderr);
+	}
 	error = writeNumbers(argv[argc - 1]);
 	if (error) {
 		return -1;
