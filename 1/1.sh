@@ -190,20 +190,21 @@ PIPE2=/tmp/xooo-pipe2
 
 if [[ "$TYPE" == "server" ]]
 	then
-	
 	# проверяем, существует ли файл
 	# если нет то создаем
 	if [[ ! -p $PIPE1 ]]
 		then 
+		echo "mknod 1";
 		mknod $PIPE1 p;
 	fi
 
 	if [[ ! -p $PIPE2 ]]
 		then
+		echo "mknod 2";
 		mknod $PIPE2 p;
 	fi
-	readPipe=PIPE1;
-	writePipe=PIPE2;
+	readPipe=$PIPE1;
+	writePipe=$PIPE2;
 	TURN=0;
 	mySym="O";
 	enemySym="X";
@@ -217,8 +218,9 @@ elif [[ "$TYPE" == "client" ]]
 		echo "Error, server not started";
 		exit 1;
 	fi
-	readPipe=PIPE2;
-	writePipe=PIPE1;
+	readPipe=$PIPE2;
+	writePipe=$PIPE1;
+	echo "readPipe: $readPipe";
 	TURN=1;
 	mySym="X";
 	enemySym="O";
@@ -237,11 +239,13 @@ printField;
 
 while true
 do
+
 	if [[ ! -p "$readPipe" || ! -p "$writePipe" ]]
-	 then
-		echo "pipe was deleted, game end"
+ 	then
+		echo "Server not started";
 		exit 1
 	fi
+	
 	# ход игрока
 	if [[ $TURN -eq 1 ]]
 		then
